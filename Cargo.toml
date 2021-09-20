@@ -1,0 +1,13 @@
+[package]
+name = "lalrpop_examples"
+version = "0.1.0"
+edition = "2021"
+
+[dev-dependencies]
+# edtion 2021(resolver version 2) need lalrpop lexer feature
+lalrpop-util = { version = "*", features = ["lexer"] }
+#lalrpop-util = "*"
+regex = "*"
+
+[build-dependencies]
+lalrpop = "*"
