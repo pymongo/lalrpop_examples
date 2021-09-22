@@ -1,3 +1,14 @@
 grammar;
 
-pub Num: i32 = <s:r"[0-9]+"> => s.parse().unwrap();
+// "a" "b" => f(<>) // <a:"a"> <b:"b"> => f(a, b)
+// more `<>` expression example: https://lalrpop.github.io/lalrpop/tutorial/003_type_inference.html
+pub Num: i32 = r"[0-9]+" => <>.parse().unwrap();
+// pub Num: i32 = <s:r"[0-9]+"> => s.parse().unwrap();
+
+// pub Term = { Num, "(" <Term> ")" };
+pub Term: i32 = {
+    <n:Num> => n,
+    // reduce a pair of parents
+    "(" <t:Term> ")" => t,
+}
+

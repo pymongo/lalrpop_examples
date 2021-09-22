@@ -7,7 +7,7 @@ edition = "2021"
 # edtion 2021(resolver version 2) need lalrpop lexer feature
 lalrpop-util = { version = "*", features = ["lexer"] }
 #lalrpop-util = "*"
-regex = "*"
+#regex = "*"
 
 [build-dependencies]
 lalrpop = "*"
