@@ -27,6 +27,8 @@ Term: Box<Expr> = {
     "(" <Expr2> ")"
 };
 
-Num: u32 = {
+// 用 i32 是为了避免减法运算的各种检查
+// IntegerLiteral
+Num: i32 = {
     r"[[:digit:]]+" => <>.parse().unwrap()
 };

@@ -16,4 +16,4 @@ ExprPrecedence2 = {
 
 Term = { Num, "(" <ExprPrecedence1> ")" }
 
-pub Num: i32 = r"[0-9]+" => <>.parse().unwrap();
+Num: i32 = r"[0-9]+" => <>.parse().unwrap();
