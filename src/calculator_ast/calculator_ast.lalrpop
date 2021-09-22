@@ -1,0 +1,32 @@
+use super::ast::{BinaryOperand, Expr};
+
+grammar;
+
+pub Expr2: Box<Expr> = { // (1)
+    Expr2 ExprOp Factor => Box::new(Expr::Expr(<>)), // (2)
+    Factor,
+};
+
+ExprOp: BinaryOperand = { // (3)
+    "+" => BinaryOperand::Add,
+    "-" => BinaryOperand::Sub,
+};
+
+Factor: Box<Expr> = {
+    Factor FactorOp Term => Box::new(Expr::Expr(<>)),
+    Term,
+};
+
+FactorOp: BinaryOperand = {
+    "*" => BinaryOperand::Mul,
+    "/" => BinaryOperand::Div,
+};
+
+Term: Box<Expr> = {
+    Num => Box::new(Expr::Num(<>)),
+    "(" <Expr2> ")"
+};
+
+Num: u32 = {
+    r"[[:digit:]]+" => <>.parse().unwrap()
+};

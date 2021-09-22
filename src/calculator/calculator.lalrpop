@@ -1,6 +1,6 @@
 grammar;
 
-// i32
+// LR left to right, 高优先级的尽可能在右侧，优先 eval 右侧
 pub ExprPrecedence1 = {
     <lhs:ExprPrecedence1> "+" <rhs:ExprPrecedence2> => lhs + rhs,
     <lhs:ExprPrecedence1> "-" <rhs:ExprPrecedence2> => lhs - rhs,
