@@ -2,15 +2,12 @@ use super::ast::Json;
 
 grammar;
 
-pub temp: String = {
-    r"\w+" => <>.to_string(),
-    true => <>.to_string()
+/// JsonRoot: Null, Arr, Map
+pub JsonRoot: Json = {
+    null => Json::Null,
+    JsonArr => Json::Arr(<>),
+    JsonMap => Json::Map(<>)
 }
-
-// JsonRoot: Null, Arr, Map
-//pub JsonRoot: Json = {
-//    null => Json::Null
-//}
 
 JsonValue: Json = {
     null => Json::Null,
@@ -18,11 +15,13 @@ JsonValue: Json = {
     false => Json::Bool(false),
     float64 => Json::F64(<>.parse().unwrap()),
     string => Json::Str(<>.to_string()),
-    JsonArr => Json::Arr(<>)
+    JsonArr => Json::Arr(<>),
+    JsonMap => Json::Map(<>)
 }
 
+// FIXME
 JsonArr: Vec<Json> = {
-    <mut v:(<JsonValue> ",")*> <e:JsonValue?> => match e {
+    "[" <mut v:(<JsonValue> ",")*> <e:JsonValue?> "]" => match e {
         None => v,
         Some(e) => {
             v.push(e);
@@ -31,17 +30,19 @@ JsonArr: Vec<Json> = {
     }
 };
 
-//JsonMap: std::collection::HashMap<String, Json> = {
-//    "{" <v:((r"\w+" ":" <Json>) ",")*> "}" => {
-        //todo!()
-    //}
-//}
+// FIXME: bug, `{"a": 1,}` should parse error
+JsonMap: std::collections::HashMap<String, Json> = {
+    "{" <v:(<string> ":" <JsonValue> ",")*> "}" => {
+        v.into_iter().map(|(k,v)| (k.to_string(), v)).collect()
+    }
+}
 
 match {
     // keywords
     "null" => null,
     "true" => true,
     "false" => false,
+
     r"[-+]?([0-9]*[.])?[0-9]+([eE][-+]?\d+)?" => float64,    
 } else {
     // match string would ambiguity to others must put it in a else branch
