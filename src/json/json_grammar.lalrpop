@@ -16,6 +16,8 @@ JsonValue: Json = {
     null => Json::Null,
     true => Json::Bool(true),
     false => Json::Bool(false),
+    float64 => Json::F64(<>.parse().unwrap()),
+    string => Json::Str(<>.to_string()),
     JsonArr => Json::Arr(<>)
 }
 
@@ -29,8 +31,10 @@ JsonArr: Vec<Json> = {
     }
 };
 
-//JsonMap: std::collection::HashMap<String, JsonValue> = {
-//    "{" (<String> "}"
+//JsonMap: std::collection::HashMap<String, Json> = {
+//    "{" <v:((r"\w+" ":" <Json>) ",")*> "}" => {
+        //todo!()
+    //}
 //}
 
 match {
@@ -38,5 +42,9 @@ match {
     "null" => null,
     "true" => true,
     "false" => false,
+    r"[-+]?([0-9]*[.])?[0-9]+([eE][-+]?\d+)?" => float64,    
+} else {
+    // match string would ambiguity to others must put it in a else branch
+    r#"(?:[^"\\]|\\.)*"# => string,
     _,
 }
