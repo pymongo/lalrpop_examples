@@ -1,3 +1,42 @@
+use super::ast::Json;
+
 grammar;
 
-pub Num: i32 = "1" => 0;
+pub temp: String = {
+    r"\w+" => <>.to_string(),
+    true => <>.to_string()
+}
+
+// JsonRoot: Null, Arr, Map
+//pub JsonRoot: Json = {
+//    null => Json::Null
+//}
+
+JsonValue: Json = {
+    null => Json::Null,
+    true => Json::Bool(true),
+    false => Json::Bool(false),
+    JsonArr => Json::Arr(<>)
+}
+
+JsonArr: Vec<Json> = {
+    <mut v:(<JsonValue> ",")*> <e:JsonValue?> => match e {
+        None => v,
+        Some(e) => {
+            v.push(e);
+            v
+        }
+    }
+};
+
+//JsonMap: std::collection::HashMap<String, JsonValue> = {
+//    "{" (<String> "}"
+//}
+
+match {
+    // keywords
+    "null" => null,
+    "true" => true,
+    "false" => false,
+    _,
+}
